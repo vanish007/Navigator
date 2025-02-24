@@ -8,7 +8,6 @@ void FillCmdLineParser(ArgParser& parser) {
     parser.AddStringArgument('p', "pskov", "Sets arrival city").Default("c25");
 
     parser.AddIntArgument("max-transfer", "Sets max amount of possible transfers").Default(1);
-    parser.AddIntArgument("max-time", "Sets max amount of travel hours").Default(100000);
 
     parser.AddFlag("from-spb-to-pskov", "Sets direction");
     parser.AddFlag("from-pskov-to-spb", "Sets direction");
@@ -28,7 +27,6 @@ void FillApiInfo(ApiInfo& info, ArgParser& parser) {
     info.date = parser.GetStringValue("date");
     info.cash_file_name = std::format("{}-{}-{}.txt", info.date, info.from, info.to);
     info.max_transfer_cnt = parser.GetIntValue("max-transfer");
-    info.max_travel_time = parser.GetIntValue("max-time");
 }
 
 bool ParseCmdLine(ArgParser& parser, int argc, char* argv[]) {

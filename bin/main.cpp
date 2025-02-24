@@ -36,7 +36,6 @@ int main(int argc, char* argv[]) {
         cpr::Response temp = cpr::Get(url, parameters);
         response = json::parse(temp.text);
         
-        
         std::ofstream fout;
         fs::create_directory(cash);
         fout.open(cash/info.cash_file_name);

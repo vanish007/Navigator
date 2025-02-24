@@ -22,4 +22,8 @@ add_library(Print
             Print/json.cpp 
             Print/json.hpp)
 target_include_directories(Print PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
-target_link_libraries(Print PUBLIC nlohmann_json::nlohmann_json)
+target_link_libraries(Print PUBLIC 
+                      nlohmann_json::nlohmann_json 
+                      ftxui::screen
+                      ftxui::dom
+                      ftxui::component)

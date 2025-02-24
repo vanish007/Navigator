@@ -15,7 +15,6 @@ struct ApiInfo {
     std::string api_key;
     std::string cash_file_name;
     int max_transfer_cnt;
-    int max_travel_time;
 };
 
 void FillCmdLineParser(ArgParser& parser);

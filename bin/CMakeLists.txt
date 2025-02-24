@@ -8,4 +8,7 @@ target_link_libraries(${PROJECT_NAME} PRIVATE
     Parse
     Time
     Print
+    PRIVATE ftxui::screen
+    PRIVATE ftxui::dom
+    PRIVATE ftxui::component
 )
