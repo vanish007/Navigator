@@ -20,40 +20,51 @@ PrintInfo GetPrintPathInfo(json cur, json response, const ApiInfo api_info, size
         json::iterator temp = cur["details"].begin();
         int i = 1;
         do {
+            if (i > 1) {
+                print_info.name.append(", ");
+            }
             print_info.name.append((*temp)["to"]["popular_title"]);
             ++temp;
+            ++temp;
             ++i;
-        } while (i < api_info.max_transfer_cnt);
+        } while (i < cur["details"].size()/2);
     }
-
+    
     if (cur.find("details") != cur.end()) {
         json::iterator temp = cur["details"].begin();
-        for (int i = 1; i <= 2*api_info.max_transfer_cnt+1; ++i) {
-            if (i%2 == 0) {
-                print_info.transfer_duration = SecondsToTime((*temp)["duration"]);
-            } else {
-                print_info.transport_type = (*temp)["thread"]["transport_type"];
-                print_info.departure = TimestampToDate(Iso8601ToTimestamp((*temp)["departure"]));
-                print_info.departure.append("(");
-                print_info.departure.append(((*temp)["departure_from"]["popular_title"].is_null() ? "" : (*temp)["departure_from"]["popular_title"]));
-                print_info.departure.append(")");
-                print_info.arrival = TimestampToDate(Iso8601ToTimestamp((*temp)["arrival"]));
-                print_info.arrival.append("(");
-                print_info.arrival.append(((*temp)["arrival_to"]["popular_title"].is_null() ? "" : (*temp)["arrival_to"]["popular_title"]));
-                print_info.arrival.append(")");
+        int total_paths_cnt = (cur["details"].size())/2;
+        if (total_paths_cnt <= api_info.max_transfer_cnt) {
+            for (int i = 1; i <= cur["details"].size(); ++i) {
+                if (i%2 == 0) {
+                    print_info.transfer_duration.push_back(SecondsToTime((*temp)["duration"]));
+                } else {
+                    print_info.transport_type.push_back((*temp)["thread"]["transport_type"]);
+                    std::string s = TimestampToDate(Iso8601ToTimestamp((*temp)["departure"]));
+                    s.append((*temp)["departure_from"]["popular_title"].is_null() ? "" : " (");
+                    s.append((*temp)["departure_from"]["popular_title"].is_null() ? "" : (*temp)["departure_from"]["popular_title"]);
+                    s.append((*temp)["departure_from"]["popular_title"].is_null() ? "" : ")");
+                    print_info.departure.push_back(s);
+                    s = TimestampToDate(Iso8601ToTimestamp((*temp)["arrival"]));
+                    s.append((*temp)["arrival_to"]["popular_title"].is_null() ? "" : " (");
+                    s.append(((*temp)["arrival_to"]["popular_title"].is_null() ? "" : (*temp)["arrival_to"]["popular_title"]));
+                    s.append((*temp)["arrival_to"]["popular_title"].is_null() ? "" : ")");
+                    print_info.arrival.push_back(s);
+                }
+                ++temp;
             }
-            ++temp;
         }
     } else {
-        print_info.transport_type = cur["thread"]["transport_type"];
-        print_info.departure = TimestampToDate(Iso8601ToTimestamp(cur["departure"]));
-        print_info.departure.append("(");
-        print_info.departure.append((cur["from"]["popular_title"].is_null() ? "" : cur["from"]["popular_title"]));
-        print_info.departure.append(")");
-        print_info.arrival = TimestampToDate(Iso8601ToTimestamp(cur["arrival"]));
-            print_info.arrival.append("(");
-            print_info.arrival.append((cur["to"]["popular_title"].is_null() ? "" : cur["to"]["popular_title"]));
-            print_info.arrival.append(")");
+        print_info.transport_type.push_back(cur["thread"]["transport_type"]);
+        std::string s = TimestampToDate(Iso8601ToTimestamp(cur["departure"]));
+        s.append(cur["from"]["popular_title"].is_null() ? "" : " (");
+        s.append((cur["from"]["popular_title"].is_null() ? "" : cur["from"]["popular_title"]));
+        s.append(cur["from"]["popular_title"].is_null() ? "" : ")");
+        print_info.departure.push_back(s);
+        s =  TimestampToDate(Iso8601ToTimestamp(cur["arrival"]));
+        s.append(cur["to"]["popular_title"].is_null() ? "" :" (");
+        s.append((cur["to"]["popular_title"].is_null() ? "" : cur["to"]["popular_title"]));
+        s.append(cur["to"]["popular_title"].is_null() ? "" :")");
+        print_info.arrival.push_back(s);
     }
     if (cur.find("duration") != cur.end()) {
         print_info.total_time = SecondsToTime(cur["duration"]);
@@ -67,16 +78,25 @@ PrintInfo GetPrintPathInfo(json cur, json response, const ApiInfo api_info, size
 
 void PrintPath(json cur, json response, const ApiInfo api_info, size_t& cnt) {
     PrintInfo print_info = GetPrintPathInfo(cur, response, api_info, cnt);
-    
-    auto table = ftxui::Table({
+    if (print_info.transfer_duration.empty() && cur.find("details") != cur.end()) {
+        return;
+    }
+
+    std::vector<std::vector<std::string>> vec = {
         {"Path", print_info.path},
         {"Name", print_info.name},
-        {"Transport type", print_info.transport_type},
-        {"Departure", print_info.departure},
-        {"Arrival", print_info.arrival},
-        {"Total time", print_info.total_time},
-        {"Ticket price", print_info.ticket_price},
-    });
+    };
+    for (int i = 0; i < print_info.departure.size(); ++i) {
+        if (i >= 1) {
+            vec.push_back({"Layover time", print_info.transfer_duration[i-1]});
+        }
+        vec.push_back({"Transport type", print_info.transport_type[i]});        
+        vec.push_back({"Departure", print_info.departure[i]});
+        vec.push_back({"Arrival", print_info.arrival[i]});
+    }
+    vec.push_back({"Total time", print_info.total_time});
+    vec.push_back({"Ticket price", print_info.ticket_price});
+    auto table = ftxui::Table(vec);
     table.SelectAll().Border(LIGHT);
     table.SelectColumn(0).Border(LIGHT);
     table.SelectRow(0).Decorate(bold);

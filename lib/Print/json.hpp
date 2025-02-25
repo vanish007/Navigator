@@ -17,10 +17,10 @@ using namespace ftxui;
 struct PrintInfo {
     std::string path;
     std::string name;
-    std::string transfer_duration;
-    std::string transport_type;
-    std::string departure;
-    std::string arrival;
+    std::vector<std::string> transfer_duration;
+    std::vector<std::string> transport_type;
+    std::vector<std::string> departure;
+    std::vector<std::string> arrival;
     std::string total_time;
     std::string ticket_price;
 };
