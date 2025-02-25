@@ -27,7 +27,7 @@ PrintInfo GetPrintPathInfo(json cur, json response, const ApiInfo api_info, size
             ++temp;
             ++temp;
             ++i;
-        } while (i < cur["details"].size()/2);
+        } while (i < cur["details"].size()/2+1);
     }
     
     if (cur.find("details") != cur.end()) {
@@ -40,14 +40,14 @@ PrintInfo GetPrintPathInfo(json cur, json response, const ApiInfo api_info, size
                 } else {
                     print_info.transport_type.push_back((*temp)["thread"]["transport_type"]);
                     std::string s = TimestampToDate(Iso8601ToTimestamp((*temp)["departure"]));
-                    s.append((*temp)["departure_from"]["popular_title"].is_null() ? "" : " (");
-                    s.append((*temp)["departure_from"]["popular_title"].is_null() ? "" : (*temp)["departure_from"]["popular_title"]);
-                    s.append((*temp)["departure_from"]["popular_title"].is_null() ? "" : ")");
+                    s.append((*temp)["from"]["title"].is_null() ? "" : " (");
+                    s.append((*temp)["from"]["title"].is_null() ? "" : (*temp)["from"]["title"]);
+                    s.append((*temp)["from"]["title"].is_null() ? "" : ")");
                     print_info.departure.push_back(s);
                     s = TimestampToDate(Iso8601ToTimestamp((*temp)["arrival"]));
-                    s.append((*temp)["arrival_to"]["popular_title"].is_null() ? "" : " (");
-                    s.append(((*temp)["arrival_to"]["popular_title"].is_null() ? "" : (*temp)["arrival_to"]["popular_title"]));
-                    s.append((*temp)["arrival_to"]["popular_title"].is_null() ? "" : ")");
+                    s.append((*temp)["to"]["title"].is_null() ? "" : " (");
+                    s.append(((*temp)["to"]["title"].is_null() ? "" : (*temp)["to"]["title"]));
+                    s.append((*temp)["to"]["title"].is_null() ? "" : ")");
                     print_info.arrival.push_back(s);
                 }
                 ++temp;
