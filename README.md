@@ -14,3 +14,5 @@
 ## Реализация 
 
 Работа с API предполагает выполнение [HTTP-запросов](https://en.wikipedia.org/wiki/HTTP). Для этого используется бибилиотека [С++ Requests](https://github.com/libcpr/cpr). В качестве библиотеки для работы с json-ответом - [nlohmann/json](https://github.com/nlohmann/json).
+
+## Пример работы программы
