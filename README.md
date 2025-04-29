@@ -43,7 +43,7 @@ Usage: route-finder.exe [options]
 | `-h`, `--help`       | -                | Нет          | Показать справку                   | -                      |
 
 ```bash
-./route-finder --date=2024-12-31 -a your_api_key_123 -s moscow -d kazan -m 2
+./route-finder  --date=2025-12-31 -s moscow -d kazan -m 2
 ```
 
 ```bash
