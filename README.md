@@ -2,32 +2,51 @@
 
 Консольное приложение для нахождения маршрутов между городами, использующее Yandex Api.
 
-
 ## Функциональность
 
 Консольное приложение ищет список возможных маршрутов до пункта назначения и обратно любыми видами транспорта (например самолет + поезд) на определенную дату (передается аргументом командной строки). Найденые промежуточные результаты кэшируются в памяти и на файловой системе для уменьшения количества запросов на внешний сервис.
 
-## Источник данных
+## Реализация
 
 В качестве источника информации используется [API Яндекса Расписаний](https://yandex.ru/dev/rasp/doc/ru/). Для разработчика оно ограничено 500 запросами в день. Вы передаете свой апи-ключ в качестве аргументов командной строки
 
-## Реализация 
-
 Работа с API предполагает выполнение [HTTP-запросов](https://en.wikipedia.org/wiki/HTTP). Для этого используется бибилиотека [С++ Requests](https://github.com/libcpr/cpr). В качестве библиотеки для работы с json-ответом - [nlohmann/json](https://github.com/nlohmann/json).
 
-## Cборка
+## Требования
 
-Cтандартная через CMake
+- C++17
+- CMake 3.12+
+- Библиотеки:
+  - cpr (https://github.com/libcpr/cpr)
+  - nlohmann/json (https://github.com/nlohmann/json)
+
+## Сборка
+
+```bash
+git clone https://github.com/vanish007/Route-Finder
+cd Route-Finder
+mkdir build && cd build
+cmake ..
+cmake --build .
+```
 
 ## Пример работы программы
 Usage: route-finder.exe [options]
 
-Options:
-  --date=<string>               Date of departure in YYYY-MM-DD format
-  -a, --api-key=<string>                Sets api key
-  -s, --source=<string>         Sets departure city
-  -m, --max-transfer=<int>              Sets max amount of possible transfers
-  -d, --destination=<string>            Sets arrival city
-  -h, --help=<bool>             Displays all available commands
+| Опция                | Аргумент         | Обязательный | Описание                           | Пример значения        |
+|----------------------|------------------|--------------|------------------------------------|------------------------|
+| `--date`             | `YYYY-MM-DD`     | Да           | Дата отправления                   | `2024-12-31`           |
+| `-a`, `--api-key`    | строка           | Да           | API-ключ Яндекс.Расписаний         | `your_api_key_123`     |
+| `-s`, `--from`       | строка           | Да           | Город отправления                  | `moscow`               |
+| `-d`, `--to`         | строка           | Да           | Город назначения                   | `kazan`                |
+| `-m`, `--max-transfers` | целое число  | Нет          | Максимальное число пересадок (по умолчанию 1) | `2`            |
+| `-h`, `--help`       | -                | Нет          | Показать справку                   | -                      |
 
-###### Пример: route-finder.exe --date=2025-04-30 -s saint-petersburg -d pekin -m 5
+```bash
+./route-finder --date=2024-12-31 -a your_api_key_123 -s moscow -d kazan -m 2
+```
+
+```bash
+route-finder.exe --date=2025-04-30 -s saint-petersburg -d pekin -m 5
+```
+![Описание](path1.png)
