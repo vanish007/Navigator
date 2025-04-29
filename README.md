@@ -14,7 +14,7 @@
 
 ## Требования
 
-- C++17
+- C++20
 - CMake 3.12+
 - Библиотеки:
   - cpr (https://github.com/libcpr/cpr)
