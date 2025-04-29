@@ -46,6 +46,8 @@ Usage: route-finder.exe [options]
 ./route-finder  --date=2025-12-31 -s moscow -d kazan -m 2
 ```
 
+![Описание](path0.png)
+
 ```bash
 route-finder.exe --date=2025-04-30 -s saint-petersburg -d pekin -m 5
 ```
